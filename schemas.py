@@ -11,10 +11,8 @@ Model name is converted to lowercase for the collection name:
 - BlogPost -> "blogs" collection
 """
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 from typing import Optional
-
-# Example schemas (replace with your own):
 
 class User(BaseModel):
     """
@@ -22,9 +20,9 @@ class User(BaseModel):
     Collection name: "user" (lowercase of class name)
     """
     name: str = Field(..., description="Full name")
-    email: str = Field(..., description="Email address")
-    address: str = Field(..., description="Address")
-    age: Optional[int] = Field(None, ge=0, le=120, description="Age in years")
+    email: EmailStr = Field(..., description="Email address")
+    password_hash: str = Field(..., description="BCrypt hashed password")
+    role: str = Field("admin", description="User role: admin or user")
     is_active: bool = Field(True, description="Whether user is active")
 
 class Product(BaseModel):
@@ -32,16 +30,14 @@ class Product(BaseModel):
     Products collection schema
     Collection name: "product" (lowercase of class name)
     """
-    title: str = Field(..., description="Product title")
+    name: str = Field(..., description="Product name")
     description: Optional[str] = Field(None, description="Product description")
     price: float = Field(..., ge=0, description="Price in dollars")
-    category: str = Field(..., description="Product category")
+    image: Optional[str] = Field(None, description="Image URL")
+    owner_id: Optional[str] = Field(None, description="ID of the user who created the product")
     in_stock: bool = Field(True, description="Whether product is in stock")
 
-# Add your own schemas here:
-# --------------------------------------------------
-
-# Note: The Flames database viewer will automatically:
+# The Flames database viewer will automatically:
 # 1. Read these schemas from GET /schema endpoint
 # 2. Use them for document validation when creating/editing
 # 3. Handle all database operations (CRUD) directly
